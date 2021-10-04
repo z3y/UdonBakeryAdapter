@@ -40,7 +40,7 @@ public class UdonBakeryAdapter : UdonSharpBehaviour
 public class UdonBakeryAdapterEditor : Editor
 {
 
-    [MenuItem("Tools/Set UdonBakeryAdaper Properties")]
+    //[MenuItem("Tools/Set UdonBakeryAdaper Properties")]
     public static void SetProperties()
     {
         GameObject obj = GameObject.Find("UdonBakeryAdapter");
