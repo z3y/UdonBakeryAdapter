@@ -4,4 +4,4 @@ Drag the UdonBakeryAdapter prefab in the scene,
 properties get filled automatically on world build.
 
 #
-Also includes Bakery Volume trigger and recivier, similar to bakery c# scripts ported to udon
+Also includes Bakery Volume trigger and receiver, similar to bakery c# scripts ported to udon
