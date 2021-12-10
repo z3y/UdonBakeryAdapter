@@ -1,5 +1,7 @@
-experimantal
+How to use SH and RNM:
 
-how to use:
-drag the prefab in the scene, 
-properties get filled automatically on build
+Drag the UdonBakeryAdapter prefab in the scene,
+properties get filled automatically on world build.
+
+#
+Also includes Bakery Volume trigger and recivier, similar to bakery c# scripts ported to udon
