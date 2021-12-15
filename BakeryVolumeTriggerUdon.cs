@@ -1,4 +1,5 @@
-﻿#if BAKERY_INCLUDED
+﻿#if VRC_SDK_VRCSDK3
+#if BAKERY_INCLUDED
 using System;
 using UdonSharp;
 using UnityEngine;
@@ -139,4 +140,5 @@ public class BakeryVolumeTriggerUdon : UdonSharpBehaviour
     }   
 #endif
 }
+#endif
 #endif

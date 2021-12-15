@@ -1,4 +1,4 @@
-﻿
+﻿#if VRC_SDK_VRCSDK3
 using UdonSharp;
 using UnityEngine;
 using VRC.SDKBase;
@@ -11,7 +11,7 @@ using UnityEditor;
 using VRC.SDKBase.Editor.BuildPipeline;
 #endif
 
-
+[UdonBehaviourSyncMode(BehaviourSyncMode.None)]
 public class UdonBakeryAdapter : UdonSharpBehaviour
 {
     public MeshRenderer[] renderers;
@@ -40,7 +40,7 @@ public class UdonBakeryAdapter : UdonSharpBehaviour
 public class UdonBakeryAdapterEditor : Editor
 {
 
-    //[MenuItem("Tools/Set UdonBakeryAdaper Properties")]
+    // [MenuItem("Tools/Set UdonBakeryAdaper Properties")]
     public static void SetProperties()
     {
         GameObject obj = GameObject.Find("UdonBakeryAdapter");
@@ -70,30 +70,6 @@ public class UdonBakeryAdapterEditor : Editor
 
             if (RNM0 && RNM1 && RNM2 && propertyLightmapMode != 0)
             {
-                for (int j = 0; j < renderersEditor[i].sharedMaterials.Length; j++)
-                {
-                    Material mat = renderersEditor[i].sharedMaterials[j];
-                    if (mat == null) continue;
-                    Shader shader = mat.shader;
-
-                    int propertyCount = ShaderUtil.GetPropertyCount(shader);
-
-                    for (int k = propertyCount - 1; k >= 0; k--)
-                    {
-                        string propertyName = ShaderUtil.GetPropertyName(shader, k);
-                        if (propertyName == "_BAKERY_SH" || propertyName == "_BAKERY_RNM")
-                        {
-                            if (mat.GetFloat("_BAKERY_SH") == 1 || mat.GetFloat("_BAKERY_RNM") == 1)
-                            {
-                                goto AddProperty;
-                            }
-                        }
-                    }
-                }
-
-                continue;
-
-                AddProperty:
                 RNMTextures textures = new RNMTextures
                 {
                     RNM0 = RNM0,
@@ -148,4 +124,5 @@ public class SetUdonBakeryAdapterProperties : IVRCSDKBuildRequestedCallback
         return true;
     }
 }
+#endif
 #endif
