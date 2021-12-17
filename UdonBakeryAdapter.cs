@@ -9,11 +9,13 @@ using System.Configuration;
 using UdonSharpEditor;
 using UnityEditor;
 using VRC.SDKBase.Editor.BuildPipeline;
+using VRC.Udon;
 #endif
 
 [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
 public class UdonBakeryAdapter : UdonSharpBehaviour
 {
+    public bool disableQuest = true;
     public MeshRenderer[] renderers;
     public int[] bakeryLightmapMode;
     public Texture[][] rnmTexture;
@@ -22,6 +24,11 @@ public class UdonBakeryAdapter : UdonSharpBehaviour
         #if UNITY_EDITOR
         return;
         #endif
+
+        #if UNITY_ANDROID
+        if(disableQuest) return;
+        #endif
+
         for (int i = 0; i < renderers.Length; i++)
         {
             MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
@@ -37,16 +44,38 @@ public class UdonBakeryAdapter : UdonSharpBehaviour
 
 }
 #if !COMPILER_UDONSHARP && UNITY_EDITOR
+[CustomEditor(typeof(UdonBakeryAdapter))]
 public class UdonBakeryAdapterEditor : Editor
 {
 
-    // [MenuItem("Tools/Set UdonBakeryAdaper Properties")]
-    public static void SetProperties()
+    public override void OnInspectorGUI()
     {
+        if (UdonSharpGUI.DrawDefaultUdonSharpBehaviourHeader(target)) return;
+        base.OnInspectorGUI();
+
+        UdonBakeryAdapter uba = (UdonBakeryAdapter) target;
+        if (GUILayout.Button("Update Properties"))
+        {
+            SetProperties(uba);
+        }
+    }
+
+    // [MenuItem("Tools/Udon Bakery Adaper/Set Properties")]
+    public static void SetPropertiesStatic()
+    {
+        // sometimes finds the wrong game object, or my project is broken
         GameObject obj = GameObject.Find("UdonBakeryAdapter");
         if (obj == null) return;
-        if(PrefabUtility.GetPrefabAssetType(obj) != PrefabAssetType.NotAPrefab) PrefabUtility.UnpackPrefabInstance(obj, PrefabUnpackMode.Completely, InteractionMode.AutomatedAction);
+        if(PrefabUtility.GetPrefabAssetType(obj) != PrefabAssetType.NotAPrefab)
+            PrefabUtility.UnpackPrefabInstance(obj, PrefabUnpackMode.Completely, InteractionMode.AutomatedAction);
+        
         UdonBakeryAdapter uba = obj.GetUdonSharpComponent<UdonBakeryAdapter>();
+        if(uba == null) return;
+        SetProperties(uba);
+    }
+    public static void SetProperties(UdonBakeryAdapter uba)
+    {
+        
 
 
         MeshRenderer[] renderersEditor = UnityEngine.Object.FindObjectsOfType<MeshRenderer>();
@@ -120,7 +149,7 @@ public class SetUdonBakeryAdapterProperties : IVRCSDKBuildRequestedCallback
 
     bool IVRCSDKBuildRequestedCallback.OnBuildRequested(VRCSDKRequestedBuildType requestedBuildType)
     {
-        UdonBakeryAdapterEditor.SetProperties();
+        UdonBakeryAdapterEditor.SetPropertiesStatic();
         return true;
     }
 }
