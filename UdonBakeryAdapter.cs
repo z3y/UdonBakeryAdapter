@@ -32,6 +32,12 @@ public class UdonBakeryAdapter : UdonSharpBehaviour
         for (int i = 0; i < renderers.Length; i++)
         {
             MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
+            
+            if (renderers[i].HasPropertyBlock())
+            {
+                renderers[i].GetPropertyBlock(propertyBlock);
+            }
+
             propertyBlock.SetFloat("bakeryLightmapMode", bakeryLightmapMode[i]);
             propertyBlock.SetTexture("_RNM0", rnmTexture[i][0]);
             propertyBlock.SetTexture("_RNM1", rnmTexture[i][1]);
