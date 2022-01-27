@@ -15,7 +15,7 @@ using VRC.Udon;
 [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
 public class UdonBakeryAdapter : UdonSharpBehaviour
 {
-    public bool disableQuest = true;
+    public bool disableQuest = false;
     public MeshRenderer[] renderers;
     public int[] bakeryLightmapMode;
     public Texture[][] rnmTexture;
