@@ -1,7 +1,8 @@
-How to use SH and RNM:
+#### How to use SH and RNM:
 
-Drag the UdonBakeryAdapter prefab in the scene,
-properties get filled automatically on world build, or Update Properties manually.
+- Import the [Unity Package](https://github.com/z3y/UdonBakeryAdapter/releases/download/v1.1/UdonBakeryLightmapAdapter.unitypackage)
+- Drag the prefab in the scene
+- Click Update Properties after baking
 
 #
-Also includes Bakery Volume trigger and receiver, similar to bakery c# scripts ported to udon
+Also includes [Bakery Volume](https://github.com/z3y/UdonBakeryAdapter/releases/download/v1.1/UdonBakeryVolumeTriggerAndReceiver.unitypackage) trigger and receiver, similar to bakery c# scripts ported to udon
