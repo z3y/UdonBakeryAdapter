@@ -53,28 +53,6 @@ public class BakeryVolumeTriggerUdon : UdonSharpBehaviour
         Debug.Log(c.name + " entered " + this.name);
         bvr.SetPropertyBlock(bakedTexture0, bakedTexture1, bakedTexture2, bakedTexture3, bakedMask, volumeMin, volumeInvSize);
     }
-
-    // private void OnTriggerStay(Collider c)
-    // {
-    //     if (c == null) return;
-    //     var bvr = c.GetComponent<BakeryVolumeReceiverUdon>();
-    //     if (bvr == null) return;
-    //     
-    //     Debug.Log(c.name + " entered " + this.name);
-    //     bvr.SetPropertyBlock(mb);
-    // }
-
-    // private void OnTriggerExit(Collider c)
-    // {
-    //     if (c == null) return;
-    //     var bvr = c.GetComponent<BakeryVolumeReceiverUdon>();
-    //     if (bvr == null) return;
-    //     
-    //     Debug.Log(c.name + " left " + this.name);
-    //     bvr.enterCounter--;
-    //     if (bvr.enterCounter == 0) bvr.SetPropertyBlock(mbEmpty);
-    // }
-
     
     
 #if !COMPILER_UDONSHARP && UNITY_EDITOR
@@ -112,7 +90,8 @@ public class BakeryVolumeTriggerUdon : UdonSharpBehaviour
         bva.bakedTexture0 = bw.bakedTexture0;
         bva.bakedTexture1 = bw.bakedTexture1;
         bva.bakedTexture2 = bw.bakedTexture2;
-        bva.bakedTexture3 = bw.bakedTexture3;
+        // used in new bakery version but maybe not needed in vrc
+        //bva.bakedTexture3 = bw.bakedTexture3;
     
         bva.bakedMask = bw.bakedMask;
         bva.volumeMin = bw.GetMin();
