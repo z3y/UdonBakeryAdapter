@@ -102,8 +102,9 @@ public class UdonBakeryAdapterEditor : Editor
             Texture RNM1 = b.GetTexture("_RNM1");
             Texture RNM2 = b.GetTexture("_RNM2");
             int propertyLightmapMode = (int) b.GetFloat("bakeryLightmapMode");
+            bool tagFilter = !renderersEditor[i].gameObject.CompareTag("EditorOnly");
 
-            if (RNM0 && RNM1 && RNM2 && propertyLightmapMode != 0)
+            if (RNM0 && RNM1 && RNM2 && propertyLightmapMode != 0 && tagFilter)
             {
                 RNMTextures textures = new RNMTextures
                 {
