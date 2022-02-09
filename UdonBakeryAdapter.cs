@@ -31,6 +31,11 @@ public class UdonBakeryAdapter : UdonSharpBehaviour
 
         for (int i = 0; i < renderers.Length; i++)
         {
+            if (renderers[i] == null)
+            {
+                continue;
+            }
+
             MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
             
             if (renderers[i].HasPropertyBlock())
