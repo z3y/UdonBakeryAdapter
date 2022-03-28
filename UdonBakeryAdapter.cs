@@ -1,4 +1,3 @@
-﻿#if VRC_SDK_VRCSDK3
 using UdonSharp;
 using UnityEngine;
 using VRC.SDKBase;
@@ -165,5 +164,4 @@ public class SetUdonBakeryAdapterProperties : IVRCSDKBuildRequestedCallback
         return true;
     }
 }
-#endif
 #endif
