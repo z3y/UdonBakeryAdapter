@@ -4,5 +4,4 @@
 - Drag the prefab in the scene
 - Click Update Properties after baking
 
-#
-Also includes [Bakery Volume](https://github.com/z3y/UdonBakeryAdapter/releases/download/v1.1/UdonBakeryVolumeTriggerAndReceiver.unitypackage) trigger and receiver, similar to bakery c# scripts ported to udon
+Properties should automatically update on world build, if not update manually after baking
