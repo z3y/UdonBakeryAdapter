@@ -61,13 +61,13 @@ public class UdonBakeryAdapterEditor : Editor
     public override void OnInspectorGUI()
     {
         if (UdonSharpGUI.DrawDefaultUdonSharpBehaviourHeader(target)) return;
-        base.OnInspectorGUI();
 
         UdonBakeryAdapter uba = (UdonBakeryAdapter) target;
         if (GUILayout.Button("Update Properties"))
         {
             SetProperties(uba);
         }
+        base.OnInspectorGUI();
     }
 
     // [MenuItem("Tools/Udon Bakery Adaper/Set Properties")]

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c333ccfdd0cbdbc4ca30cef2dd6e6b9b, type: 3}
   m_Name: BakeryVolumeReceiverUdon
   m_EditorClassIdentifier: 
-  serializedUdonProgramAsset: {fileID: 11400000, guid: 46319ea6f5555ce4cbdb7e850d38f082,
+  serializedUdonProgramAsset: {fileID: 11400000, guid: 8fa44663b9c734c4092d5d9f9612c118,
     type: 2}
   udonAssembly: 
   assemblyError: 
