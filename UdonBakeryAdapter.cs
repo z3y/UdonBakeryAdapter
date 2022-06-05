@@ -15,7 +15,7 @@ using VRC.Udon;
 public class UdonBakeryAdapter : UdonSharpBehaviour
 {
     public bool disableQuest = false;
-    public MeshRenderer[] renderers;
+    public Renderer[] renderers;
     public int[] bakeryLightmapMode;
     public Texture[][] rnmTexture;
     void Start()
@@ -89,8 +89,9 @@ public class UdonBakeryAdapterEditor : Editor
 
 
         MeshRenderer[] renderersEditor = UnityEngine.Object.FindObjectsOfType<MeshRenderer>();
+        SkinnedMeshRenderer[] skinnedRenderers = UnityEngine.Object.FindObjectsOfType<SkinnedMeshRenderer>();
 
-        List<MeshRenderer> renderersEditorClean = new List<MeshRenderer>();
+        List<Renderer> renderersEditorClean = new List<Renderer>();
 
         List<RNMTextures> rnmTexturesList = new List<RNMTextures>();
 
@@ -123,7 +124,32 @@ public class UdonBakeryAdapterEditor : Editor
 
         }
 
-        MeshRenderer[] r = renderersEditorClean.ToArray();
+        for (int i = 0; i < skinnedRenderers.Length; i++)
+        {
+            MaterialPropertyBlock b = new MaterialPropertyBlock();
+            skinnedRenderers[i].GetPropertyBlock(b);
+
+            Texture RNM0 = b.GetTexture("_RNM0");
+            Texture RNM1 = b.GetTexture("_RNM1");
+            Texture RNM2 = b.GetTexture("_RNM2");
+            int propertyLightmapMode = (int)b.GetFloat("bakeryLightmapMode");
+            bool tagFilter = !skinnedRenderers[i].gameObject.CompareTag("EditorOnly");
+
+            if (RNM0 && RNM1 && RNM2 && propertyLightmapMode != 0 && tagFilter)
+            {
+                RNMTextures textures = new RNMTextures
+                {
+                    RNM0 = RNM0,
+                    RNM1 = RNM1,
+                    RNM2 = RNM2
+                };
+                rnmTexturesList.Add(textures);
+                renderersEditorClean.Add(skinnedRenderers[i]);
+                bakeryLightmapModeEditor.Add(propertyLightmapMode);
+            }
+        }
+
+        Renderer[] r = renderersEditorClean.ToArray();
 
         Texture[][] bakeryTextures = new Texture[r.Length][];
 
