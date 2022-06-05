@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using UnityEditor;
 using UnityEngine;
 using System.Reflection;
-using NUnit.Framework;
 
 public class BakeryModeUtility : EditorWindow
 {
@@ -16,10 +14,69 @@ public class BakeryModeUtility : EditorWindow
         window.Show();
     }
     
+    static BakeryModeUtility() => ftRenderLightmap.OnFinishedFullRender += OnBakeComplete;
+    
     private static MethodInfo _getShaderGlobalKeywords = typeof(ShaderUtil).GetMethod("GetShaderGlobalKeywords", BindingFlags.Static | BindingFlags.NonPublic);
     private static MethodInfo _getShaderLocalKeywords = typeof(ShaderUtil).GetMethod("GetShaderLocalKeywords", BindingFlags.Static | BindingFlags.NonPublic);
+    
     private static readonly int BakeryLightmapMode = Shader.PropertyToID("bakeryLightmapMode");
 
+    private const string AutoSwitchPref = "BakeryModeUtilityAutoSwitch";
+
+    private static bool _autoSwitch = false;
+
+    private bool _firstTime = true;
+    private void OnGUI()
+    {
+        if (_firstTime)
+        {
+            _autoSwitch = EditorPrefs.GetBool(AutoSwitchPref, false);
+            _firstTime = false;
+        }
+        if (GUILayout.Button("From Property Blocks"))
+        {
+            SetFromPropertyBlocks();
+        }
+        
+        if (GUILayout.Button("SH"))
+        {
+            var bakeryMaterials = FindSupportedObjects();
+            foreach (var material in bakeryMaterials.Keys)
+            {
+                material.EnableKeyword("BAKERY_SH");
+                material.DisableKeyword("BAKERY_RNM");
+            }
+        }
+        
+        if (GUILayout.Button("RNM"))
+        {
+            var bakeryMaterials = FindSupportedObjects();
+            foreach (var material in bakeryMaterials.Keys)
+            {
+                material.EnableKeyword("BAKERY_RNM");
+                material.DisableKeyword("BAKERY_SH");
+            }
+        }
+        
+        if (GUILayout.Button("Disable"))
+        {
+            var renderers = FindObjectsOfType<Renderer>().ToList();
+            var materials = renderers.SelectMany(x => x.sharedMaterials).Distinct().ToList();
+            
+            foreach (var material in materials)
+            {
+                material.DisableKeyword("BAKERY_SH");
+                material.DisableKeyword("BAKERY_RNM");
+            }
+        }
+        
+        EditorGUI.BeginChangeCheck();
+        _autoSwitch = EditorGUILayout.ToggleLeft("Auto Switch", _autoSwitch);
+        if (EditorGUI.EndChangeCheck())
+        {
+            EditorPrefs.SetBool(AutoSwitchPref, _autoSwitch);
+        }
+    }
 
     private static Dictionary<Material, int> FindSupportedObjects(bool checkPropertyBlocks = false)
     {
@@ -62,16 +119,11 @@ public class BakeryModeUtility : EditorWindow
             
             foreach (var rendererSharedMaterial in renderer.sharedMaterials)
             {
-                if (!supportedMaterials.Contains(rendererSharedMaterial)) continue;
-                
-                Debug.Log("Adding");
-                
+                if (!supportedMaterials.Contains(rendererSharedMaterial) || bakeryMaterials.ContainsKey(rendererSharedMaterial)) continue;
+
                 bakeryMaterials.Add(rendererSharedMaterial, bakeryMode);
             }
         }
-        
-        Debug.Log(bakeryMaterials.Count());
-
 
         return bakeryMaterials;
     }
@@ -82,59 +134,28 @@ public class BakeryModeUtility : EditorWindow
         else material.DisableKeyword(keyword);
     }
 
-
-    private void OnGUI()
+    private static void SetFromPropertyBlocks()
     {
-        if (GUILayout.Button("From Property Blocks"))
-        {
-            var bakeryMaterials = FindSupportedObjects(true);
+        var bakeryMaterials = FindSupportedObjects(true);
 
-            foreach (var material in bakeryMaterials.Keys)
-            {
-                ToggleKeyword(material, "BAKERY_SH", bakeryMaterials[material] == 3);
-                ToggleKeyword(material, "BAKERY_RNM", bakeryMaterials[material] == 2);
+        foreach (var material in bakeryMaterials.Keys)
+        {
+            ToggleKeyword(material, "BAKERY_SH", bakeryMaterials[material] == 3);
+            ToggleKeyword(material, "BAKERY_RNM", bakeryMaterials[material] == 2);
 
-                if (bakeryMaterials[material] == 0)
-                {
-                    material.DisableKeyword("BAKERY_SH");
-                    material.DisableKeyword("BAKERY_RNM");
-                }
-
-            }
-        }
-        
-        if (GUILayout.Button("SH"))
-        {
-            var bakeryMaterials = FindSupportedObjects();
-            foreach (var material in bakeryMaterials.Keys)
-            {
-                material.EnableKeyword("BAKERY_SH");
-                material.DisableKeyword("BAKERY_RNM");
-            }
-        }
-        
-        if (GUILayout.Button("RNM"))
-        {
-            var bakeryMaterials = FindSupportedObjects();
-            foreach (var material in bakeryMaterials.Keys)
-            {
-                material.EnableKeyword("BAKERY_RNM");
-                material.DisableKeyword("BAKERY_SH");
-            }
-        }
-        
-        if (GUILayout.Button("Disable"))
-        {
-            var renderers = FindObjectsOfType<Renderer>().ToList();
-            var materials = renderers.SelectMany(x => x.sharedMaterials).Distinct().ToList();
-            
-            foreach (var material in materials)
+            if (bakeryMaterials[material] == 0)
             {
                 material.DisableKeyword("BAKERY_SH");
                 material.DisableKeyword("BAKERY_RNM");
             }
         }
+    }
+
+    private static void OnBakeComplete(object sender, EventArgs e)
+    {
+        if (!EditorPrefs.GetBool(AutoSwitchPref, false)) return;
         
-        
+        SetFromPropertyBlocks();
+        Debug.Log("[BakeryModeUtility] Bakery Keywords Applied"); 
     }
 }
