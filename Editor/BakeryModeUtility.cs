@@ -6,6 +6,7 @@ using UnityEditor;
 using UnityEngine;
 using System.Reflection;
 
+[InitializeOnLoad]
 public class BakeryModeUtility : EditorWindow
 {
     [MenuItem("Window/Bakery Mode Utility")]
