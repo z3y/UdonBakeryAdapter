@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if UNITY_EDITOR && BAKERY_INCLUDED
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
@@ -14,7 +15,7 @@ public class BakeryModeUtility : EditorWindow
         window.Show();
     }
     
-    static BakeryModeUtility() => ftRenderLightmap.OnFinishedFullRender += OnBakeComplete;
+    static BakeryModeUtility() => ftRenderLightmap.OnFinishedFullRender += AutoSwitch;
     
     private static MethodInfo _getShaderGlobalKeywords = typeof(ShaderUtil).GetMethod("GetShaderGlobalKeywords", BindingFlags.Static | BindingFlags.NonPublic);
     private static MethodInfo _getShaderLocalKeywords = typeof(ShaderUtil).GetMethod("GetShaderLocalKeywords", BindingFlags.Static | BindingFlags.NonPublic);
@@ -110,14 +111,14 @@ public class BakeryModeUtility : EditorWindow
         
         var storage = ftRenderLightmap.FindRenderSettingsStorage();
         var bakeryMaterials = new Dictionary<Material, int>();
-        
+
         foreach (var renderer in renderers)
         {
             if (!renderer.HasPropertyBlock()) continue;
             
             var block = new MaterialPropertyBlock();
             renderer.GetPropertyBlock(block);
-            int bakeryMode = storage.renderSettingsRenderDirMode != 0 ? block.GetInt(BakeryLightmapMode) : 0;
+            int bakeryMode = storage.renderSettingsRenderDirMode > 2 ? block.GetInt(BakeryLightmapMode) : 0;
             
             foreach (var rendererSharedMaterial in renderer.sharedMaterials)
             {
@@ -153,11 +154,12 @@ public class BakeryModeUtility : EditorWindow
         }
     }
 
-    private static void OnBakeComplete(object sender, EventArgs e)
+    private static void AutoSwitch(object sender, EventArgs e)
     {
         if (!EditorPrefs.GetBool(AutoSwitchPref, false)) return;
         
         SetFromPropertyBlocks();
-        Debug.Log("[BakeryModeUtility] Bakery Keywords Applied"); 
+        Debug.Log("<color=fuchsia>[BakeryModeUtility]</color> Bakery Keywords Applied"); 
     }
 }
+#endif
