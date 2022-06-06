@@ -33,12 +33,12 @@ public class BakeryModeUtility : EditorWindow
             _autoSwitch = EditorPrefs.GetBool(AutoSwitchPref, false);
             _firstTime = false;
         }
-        if (GUILayout.Button("From Property Blocks"))
+        if (GUILayout.Button(new GUIContent("From Property Blocks", "Toggle BAKERY_SH or BAKERY_RNM depending on bakeryLightmapMode from property blocks on all materials if the shader supports it")))
         {
             SetFromPropertyBlocks();
         }
         
-        if (GUILayout.Button("SH"))
+        if (GUILayout.Button(new GUIContent("SH", "Enable BAKERY_SH on all materials if the shader supports it")))
         {
             var bakeryMaterials = FindSupportedObjects();
             foreach (var material in bakeryMaterials.Keys)
@@ -48,7 +48,7 @@ public class BakeryModeUtility : EditorWindow
             }
         }
         
-        if (GUILayout.Button("RNM"))
+        if (GUILayout.Button(new GUIContent("RNM", "Enable BAKERY_RNM on all materials if the shader supports it")))
         {
             var bakeryMaterials = FindSupportedObjects();
             foreach (var material in bakeryMaterials.Keys)
@@ -58,7 +58,7 @@ public class BakeryModeUtility : EditorWindow
             }
         }
         
-        if (GUILayout.Button("Disable"))
+        if (GUILayout.Button(new GUIContent("Disable", "Disable BAKERY_SH and BAKERY_RNM on all materials")))
         {
             var renderers = FindObjectsOfType<Renderer>().ToList();
             var materials = renderers.SelectMany(x => x.sharedMaterials).Distinct().ToList();
@@ -71,7 +71,7 @@ public class BakeryModeUtility : EditorWindow
         }
         
         EditorGUI.BeginChangeCheck();
-        _autoSwitch = EditorGUILayout.ToggleLeft("Auto Switch", _autoSwitch);
+        _autoSwitch = EditorGUILayout.ToggleLeft(new GUIContent("Auto Switch", "Toggle BAKERY_SH or BAKERY_RNM automatically after the bake is finished based on property blocks"), _autoSwitch);
         if (EditorGUI.EndChangeCheck())
         {
             EditorPrefs.SetBool(AutoSwitchPref, _autoSwitch);
