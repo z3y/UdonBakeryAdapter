@@ -72,7 +72,7 @@ public class BakeryModeUtility : EditorWindow
             EditorPrefs.SetBool(AutoSwitchPref, _autoSwitch);
         }
 
-        EditorGUILayout.HelpBox(new GUIContent("Supports shaders with BAKERY_SH or BAKERY_RNM keyword. Toggles on the materials will not be updated visually, only keywords get applied"));
+        EditorGUILayout.HelpBox(new GUIContent("Supports shaders with BAKERY_SH or BAKERY_RNM keyword. Toggles on the materials will not be updated visually, only keywords get applied. Keywords on materials are visible in debug mode"));
     }
 
     private static void DisableAll()
