@@ -61,14 +61,7 @@ public class BakeryModeUtility : EditorWindow
         
         if (GUILayout.Button(new GUIContent("Disable", "Disable BAKERY_SH and BAKERY_RNM on all materials")))
         {
-            var renderers = FindObjectsOfType<Renderer>().ToList();
-            var materials = renderers.SelectMany(x => x.sharedMaterials).Distinct().ToList();
-            
-            foreach (var material in materials)
-            {
-                material.DisableKeyword("BAKERY_SH");
-                material.DisableKeyword("BAKERY_RNM");
-            }
+            DisableAll();
         }
         
         EditorGUI.BeginChangeCheck();
@@ -79,6 +72,18 @@ public class BakeryModeUtility : EditorWindow
         }
 
         EditorGUILayout.HelpBox(new GUIContent("Supports shaders with BAKERY_SH or BAKERY_RNM keyword. Toggles on the materials will not be updated visually, only keywords get applied"));
+    }
+
+    private static void DisableAll()
+    {
+        var renderers = FindObjectsOfType<Renderer>().ToList();
+        var materials = renderers.SelectMany(x => x.sharedMaterials).Distinct().ToList();
+
+        foreach (var material in materials)
+        {
+            material.DisableKeyword("BAKERY_SH");
+            material.DisableKeyword("BAKERY_RNM");
+        }
     }
 
     private static Dictionary<Material, int> FindSupportedObjects(bool checkPropertyBlocks = false)
@@ -139,6 +144,7 @@ public class BakeryModeUtility : EditorWindow
 
     private static void SetFromPropertyBlocks()
     {
+        DisableAll();
         var bakeryMaterials = FindSupportedObjects(true);
 
         foreach (var material in bakeryMaterials.Keys)
