@@ -82,6 +82,7 @@ public class BakeryModeUtility : EditorWindow
 
         foreach (var material in materials)
         {
+            if (material is null) continue;
             material.DisableKeyword("BAKERY_SH");
             material.DisableKeyword("BAKERY_RNM");
         }
@@ -97,7 +98,7 @@ public class BakeryModeUtility : EditorWindow
 
         foreach (var material in materials)
         {
-            if (material.shader is null) continue;
+            if (material is null || material.shader is null) continue;
 
             var globalKeywords = (string[])_getShaderGlobalKeywords.Invoke(null, new object[] { material.shader });
             var localKeywords = (string[])_getShaderLocalKeywords.Invoke(null, new object[] { material.shader });
