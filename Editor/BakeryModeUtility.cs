@@ -47,6 +47,7 @@ public class BakeryModeUtility : EditorWindow
             {
                 material.EnableKeyword("BAKERY_SH");
                 material.DisableKeyword("BAKERY_RNM");
+                ToggleProperties(material, true, false);
             }
         }
         
@@ -57,6 +58,7 @@ public class BakeryModeUtility : EditorWindow
             {
                 material.EnableKeyword("BAKERY_RNM");
                 material.DisableKeyword("BAKERY_SH");
+                ToggleProperties(material, false, true);
             }
         }
         
@@ -72,7 +74,7 @@ public class BakeryModeUtility : EditorWindow
             EditorPrefs.SetBool(AutoSwitchPref, _autoSwitch);
         }
 
-        EditorGUILayout.HelpBox(new GUIContent("Supports shaders with BAKERY_SH or BAKERY_RNM keyword. Toggles on the materials will not be updated visually, only keywords get applied. Keywords on materials are visible in debug mode"));
+        EditorGUILayout.HelpBox(new GUIContent("Supports shaders with BAKERY_SH or BAKERY_RNM keyword. Toggles on some materials will not be updated visually, only keywords get applied. Keywords on materials are visible in debug mode"));
     }
 
     private static void DisableAll()
@@ -85,6 +87,7 @@ public class BakeryModeUtility : EditorWindow
             if (material is null) continue;
             material.DisableKeyword("BAKERY_SH");
             material.DisableKeyword("BAKERY_RNM");
+            ToggleProperties(material, false, false);
         }
     }
 
@@ -138,6 +141,34 @@ public class BakeryModeUtility : EditorWindow
         return bakeryMaterials;
     }
 
+
+    // tries to set the float on common property names
+    private static void ToggleProperties(Material material, bool SH, bool RNM)
+    {
+        material.SetFloat("_BAKERY_SH", SH ? 1 : 0);
+        material.SetFloat("_BAKERY_RNM", RNM ? 1 : 0);
+
+        if (!SH && !RNM)
+        {
+            material.SetFloat("Bakery", 0);
+            material.SetFloat("_BakeryMode", 0);
+            material.SetFloat("_Bakery", 0);
+        }
+        else if (SH)
+        {
+            material.SetFloat("Bakery", 1);
+            material.SetFloat("_BakeryMode", 1);
+            material.SetFloat("_Bakery", 1);
+        }
+        else if (RNM)
+        {
+            material.SetFloat("Bakery", 2);
+            material.SetFloat("_BakeryMode", 2);
+            material.SetFloat("_Bakery", 2);
+        }
+
+    }
+
     private static void ToggleKeyword(Material material, string keyword, bool enable)
     {
         if (enable) material.EnableKeyword(keyword);
@@ -153,6 +184,8 @@ public class BakeryModeUtility : EditorWindow
         {
             ToggleKeyword(material, "BAKERY_SH", bakeryMaterials[material] == 3);
             ToggleKeyword(material, "BAKERY_RNM", bakeryMaterials[material] == 2);
+
+            ToggleProperties(material, bakeryMaterials[material] == 3, bakeryMaterials[material] == 2);
 
             if (bakeryMaterials[material] == 0)
             {
