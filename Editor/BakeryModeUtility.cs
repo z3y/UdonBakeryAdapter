@@ -62,7 +62,7 @@ public class BakeryModeUtility : EditorWindow
             DisableAll();
         }
 
-        EditorGUILayout.HelpBox(new GUIContent("Only supports shaders with BAKERY_SH, BAKERY_RNM or BAKERY_MONOSH keyword. Toggles on some materials will not be updated visually, only keywords get applied"));
+        EditorGUILayout.HelpBox(new GUIContent("Only supports shaders with BAKERY_SH, BAKERY_RNM or BAKERY_MONOSH keyword"));
     }
 
     private static void DisableAll()
