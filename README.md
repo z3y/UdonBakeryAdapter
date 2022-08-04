@@ -9,5 +9,4 @@
 
 Properties should automatically update on world build, if not update manually after baking
 
-### Bakery Mode Utility
-Editor script for managing bakery keywords on materials in the scene `Window > Bakery Mode Utility`
+[Bakery Mode Utility](https://github.com/z3y/BakeryModeUtility) An editor script for managing bakery keywords on all materials in the scene
